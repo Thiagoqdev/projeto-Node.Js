@@ -8,7 +8,7 @@ import ProductService from "../service/ProductService.js";
                 const { name, description, state, purchased_atm, id } = req.body;
 
                 // Chama o método 'create' do 'ProductService' passando os parâmetros necessários e aguarda a criação do produto
-                const product = await ProductService.create(req, name, description, state, purchased_at, id);
+                const product = await ProductService.create(req, name, description, state, purchased_at);
 
                 // Retorna uma resposta HTTP 201 (Created) com o produto criado em formato JSON
                 res.status(201).json({ product });
@@ -44,7 +44,8 @@ import ProductService from "../service/ProductService.js";
 
         static async show(req, res){
             try{
-                res.json({message:"show"});
+                const product = await ProductService.showById(req);
+                res.status(200).json({product});
             }catch(error){
                 error.statusCode = error.statusCode || 500;
                 res.status(error.statusCode).json({error: error.message});
@@ -71,7 +72,8 @@ import ProductService from "../service/ProductService.js";
 
         static async showUserProducts(req, res){
             try{
-                res.json({message:"showUserProducts"});
+             
+                res.json({message: "showUserProducts"});
             }catch(error){
                 error.statusCode = error.statusCode || 500;
                 res.status(error.statusCode).json({error: error.message});

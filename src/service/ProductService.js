@@ -7,18 +7,12 @@ export default class ProductService{
         // Obtém o usuário atual através do serviço de usuários usando as informações da requisição
         const user = await UserService.getUser(req);
 
-        ProductService.idValidation(req._id, id);
-
-        ProductService.getProductbyId(id);
-
         // Inicializa um array vazio para armazenar as imagens
         let images = [];
         // Verifica se há arquivos na requisição
         if (req.files) {
             // Se houver, armazena-os no array 'images'
             images = req.files;
-            const product = new Product({name, email, password: passwordHash, address, phone});
-            const productSaved = await product.save();
         }
 
         // Define a variável 'available' como true para indicar que o produto está disponível
@@ -105,8 +99,21 @@ export default class ProductService{
         return products;
     }
 
-    static async show(){
-        
+    static async showById(req){
+      const idFromRequest = await ProductService.productbyIdValidator(req);
+      const product = await ProductService.getProductById(req);
+    return product
+    }
+
+     static async getUserByToken(req){
+        if(!req.user){
+            const error = new Error("Acesso Negado.");
+            error.statusCode = 401;
+            throw error;
+        }
+
+        const user = User.findOne({_id: req.user.id}).select("-password");
+        return user;
     }
 
     static async update(){
@@ -133,23 +140,24 @@ export default class ProductService{
         
     }
 
-    static idValidation(idFromReq, id){
-        if (idFromReq !== id) {
-            const error = new Error("Id não encontrado");
+    static async productbyIdValidator(req){
+        const id = await Product.findById(req._id).select("-password");
+
+        if(!id){
+            const error = new Error("Id da requisição não encontrado.");
             error.statusCode = 404;
             throw error;
         }
+        return id;
     }
 
-    static async getProductbyId(req){
-        const product = await Product.findById(req.Product._id).select("-password");
-
-        if(!product){
-            const error = new Error("Produto não existe.");
-            error.statusCode = 404;
-            throw error;
+    static async getProductById(req){
+        const product = Product.findOne({_id: req.product._id}).select("-password");
+             if(!product){
+                const error = new Error("Produto não encontrado.");
+                error.statusCode = 404;
+             throw error;
         }
-
         return product;
     }
 }
