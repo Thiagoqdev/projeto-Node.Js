@@ -89,8 +89,19 @@ export default class UserService{
         return user;
     }
 
-    static async updateUser(req, name, email, password, confirmPassword, phone, address){
-        const user = await this.getUser(req);
+    static async getUserByToken(req){
+        if(!req.user){
+            const error = new Error("Acesso Negado.");
+            error.statusCode = 401;
+            throw error;
+        }
+
+        const user = User.findOne({_id: req.user.id}).select("-password");
+        return user;
+    }
+
+     static async updateUser(req, name, email, password, confirmPassword, phone, address){
+         const user = await this.getUser(req);
     
         if(req.file){
             user.image = req.file.filename;

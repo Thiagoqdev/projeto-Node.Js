@@ -32,11 +32,9 @@ export default class UserController{
         }
     }
 
-    //req.user
     static async getUser(req, res){
         try{
-            const user = await UserService.getUser(req);
-
+            const user = await UserService.getUserByToken(req);
             res.status(200).json({user});
         }catch(error){
             error.statusCode = error.statusCode || 500;
@@ -47,7 +45,6 @@ export default class UserController{
     static async updateUser(req, res){
         try{
             const {name, email, password, confirmPassword, phone, address} = req.body;
-
             const user = await UserService.updateUser(req, name, email, password, confirmPassword, phone, address);
 
             res.status(200).json({user});
