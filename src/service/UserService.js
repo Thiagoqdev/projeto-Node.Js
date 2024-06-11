@@ -77,7 +77,7 @@ export default class UserService{
         return user;
     }
 
-    static async getUser(req){
+   static async getUser(req){
         const user = await User.findById(req.user.id).select("-password");
 
         if(!user){

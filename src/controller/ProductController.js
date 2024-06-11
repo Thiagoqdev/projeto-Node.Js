@@ -3,9 +3,9 @@ import ProductService from "../service/ProductService.js";
     export default class ProductController{
         // Define o método estático assíncrono 'create' com os parâmetros 'req' e 'res'
         static async create(req, res) {
-            try {
+          try {
                 // Extrai 'name', 'description', 'state' e 'purchased_at' do corpo da requisição (req.body)
-                const { name, description, state, purchased_atm, id } = req.body;
+                const { name, description, state, purchased_at } = req.body;
 
                 // Chama o método 'create' do 'ProductService' passando os parâmetros necessários e aguarda a criação do produto
                 const product = await ProductService.create(req, name, description, state, purchased_at);
@@ -18,12 +18,12 @@ import ProductService from "../service/ProductService.js";
 
                 // Retorna uma resposta HTTP com o status code do erro e a mensagem de erro em formato JSON
                 res.status(error.statusCode).json({ error: error.message });
-            }   
+            }     
         }
 
         // Define o método estático assíncrono 'index' com os parâmetros 'req' e 'res'
         static async index(req, res) {
-            try {
+           try {
                 // Extrai 'page' e 'limit' dos parâmetros da query string da requisição (req.query)
                 // Define valores padrão para 'page' como 1 e 'limit' como 10, caso não sejam fornecidos
                 const { page = 1, limit = 10 } = req.query;

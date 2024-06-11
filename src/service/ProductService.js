@@ -3,7 +3,7 @@ import UserService from "./UserService.js";
 
 export default class ProductService{
     // Define o método estático assíncrono 'create' com os parâmetros 'req', 'name', 'description', 'state' e 'purchased_at'
-    static async create(req, name, description, state, purchased_at, id) {
+     static async create(req, name, description, state, purchased_at) {
         // Obtém o usuário atual através do serviço de usuários usando as informações da requisição
         const user = await UserService.getUser(req);
 
@@ -101,7 +101,9 @@ export default class ProductService{
 
     static async showById(req){
       const idFromRequest = await ProductService.productbyIdValidator(req);
-      const product = await ProductService.getProductById(req);
+      const product = await ProductService.getProductById(idFromRequest);
+
+
     return product
     }
 
@@ -141,18 +143,16 @@ export default class ProductService{
     }
 
     static async productbyIdValidator(req){
-        const id = await Product.findById(req._id).select("-password");
-
-        if(!id){
+        if(!req.id){
             const error = new Error("Id da requisição não encontrado.");
             error.statusCode = 404;
             throw error;
         }
-        return id;
+        return req.id;
     }
 
-    static async getProductById(req){
-        const product = Product.findOne({_id: req.product._id}).select("-password");
+    static async getProductById(id){
+        const product = Product.findById({_id: id}).select("-password");
              if(!product){
                 const error = new Error("Produto não encontrado.");
                 error.statusCode = 404;
