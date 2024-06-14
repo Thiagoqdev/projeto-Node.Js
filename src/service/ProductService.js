@@ -83,6 +83,24 @@ export default class ProductService{
         return productSaved;
     }
 
+    static async findByReciever(recieverId) {
+        try {
+            const products = await Product.find({ reciever: recieverId });
+            return products;
+        } catch (error) {
+            throw new Error('Erro ao buscar produtos pelo reciever');
+        }
+    }
+
+    static async updateProduct(id, productData) {
+        try {
+            const updatedProduct = await Product.findByIdAndUpdate(id, productData, { new: true });
+            return updatedProduct;
+        } catch (error) {
+            throw new Error('Erro ao atualizar produto');
+        }
+    }
+
     // Define o método estático assíncrono 'index' com os parâmetros 'page' e 'limit'
     static async index(page, limit) {
         // Busca todos os produtos no banco de dados, ordenados pela data de criação em ordem decrescente

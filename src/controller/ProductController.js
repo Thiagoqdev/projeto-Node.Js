@@ -1,4 +1,5 @@
 import ProductService from "../service/ProductService.js";
+import mongoose from 'mongoose';
 import UserService from "../service/UserService.js";
 
     export default class ProductController{
@@ -43,6 +44,61 @@ import UserService from "../service/UserService.js";
             }
         }
 
+        static async showRecieverProducts(req, res) {
+            try {
+                const user = await UserService.getUserByToken(req);
+                const products = await ProductService.findByReciever(user.id);
+                res.status(200).json({ products });
+            } catch (error) {
+                error.statusCode = error.statusCode || 500;
+                res.status(error.statusCode).json({ error: error.message });
+            }
+        }
+    
+        static async update(req, res) {
+            const { id } = req.params;
+            const productData = req.body;
+    
+            try {
+                
+                if (!mongoose.Types.ObjectId.isValid(id)) {
+                    return res.status(400).json({ message: 'ID do produto inválido' });
+                }
+    
+                // Vverificar todos os campos do produto
+                const { name, description, images, available, state, owner, reciever } = productData;
+    
+                if (!name || !description || !Array.isArray(images) || images.length === 0 || typeof available !== 'boolean') {
+                    return res.status(400).json({ message: 'Todos os campos obrigatórios devem ser preenchidos corretamente' });
+                }
+    
+                if (state && !["good", "fair", "bad"].includes(state)) {
+                    return res.status(400).json({ message: 'Estado do produto inválido' });
+                }
+    
+                if (owner && !mongoose.Types.ObjectId.isValid(owner)) {
+                    return res.status(400).json({ message: 'ID do proprietário inválido' });
+                }
+    
+                if (reciever && !mongoose.Types.ObjectId.isValid(reciever)) {
+                    return res.status(400).json({ message: 'ID do receptor inválido' });
+                }
+    
+                const updatedProduct = await ProductService.updateProduct(id, productData);
+    
+
+                if (!updatedProduct) {
+                    return res.status(404).json({ message: 'Produto não encontrado' });
+                }
+    
+                // Retornar o produto atualizado
+                res.status(200).json({ updatedProduct });
+            } catch (error) {
+                error.statusCode = error.statusCode || 500;
+                res.status(error.statusCode).json({ error: error.message });
+            }
+        }
+
         static async show(req, res){
             const {id} = req.body;
             try{
@@ -54,14 +110,7 @@ import UserService from "../service/UserService.js";
             }
         }
 
-        static async update(req, res){
-            try{
-                res.json({message:"update"});
-            }catch(error){
-                error.statusCode = error.statusCode || 500;
-                res.status(error.statusCode).json({error: error.message});
-            }
-        }
+
 
         static async delete(req, res){
             try{
@@ -83,14 +132,6 @@ import UserService from "../service/UserService.js";
             }
         }
 
-        static async showRecieverProducts(req, res){
-            try{
-                res.json({message:"showRecieverProducts"});
-            }catch(error){
-                error.statusCode = error.statusCode || 500;
-                res.status(error.statusCode).json({error: error.message});
-            }
-        }
 
         static async schedule(req, res){
             try{
