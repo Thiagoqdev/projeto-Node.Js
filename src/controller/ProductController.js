@@ -1,4 +1,5 @@
 import ProductService from "../service/ProductService.js";
+import UserService from "../service/UserService.js";
 
     export default class ProductController{
         // Define o método estático assíncrono 'create' com os parâmetros 'req' e 'res'
@@ -43,9 +44,10 @@ import ProductService from "../service/ProductService.js";
         }
 
         static async show(req, res){
+            const {id} = req.body;
             try{
-                const product = await ProductService.showById(req);
-                res.status(200).json({product});
+                const produtoEncontrado = await ProductService.showById(id);
+                res.status(200).json({produtoEncontrado});
             }catch(error){
                 error.statusCode = error.statusCode || 500;
                 res.status(error.statusCode).json({error: error.message});
@@ -72,8 +74,9 @@ import ProductService from "../service/ProductService.js";
 
         static async showUserProducts(req, res){
             try{
-             
-                res.json({message: "showUserProducts"});
+              const user = await UserService.getUserByToken(req);
+              const produtoEncontrado = await ProductService.showById(user.id);
+                res.json({produtoEncontrado});
             }catch(error){
                 error.statusCode = error.statusCode || 500;
                 res.status(error.statusCode).json({error: error.message});

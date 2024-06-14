@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
 import Product from "../model/Product.js"
 import UserService from "./UserService.js";
+import User from "../model/User.js";
 
 export default class ProductService{
     // Define o método estático assíncrono 'create' com os parâmetros 'req', 'name', 'description', 'state' e 'purchased_at'
@@ -99,11 +101,9 @@ export default class ProductService{
         return products;
     }
 
-    static async showById(req){
-      const idFromRequest = await ProductService.productbyIdValidator(req);
-      const product = await ProductService.getProductById(idFromRequest);
-
-
+    static async showById(id){
+      const iDFromReq = ProductService.productbyIdValidator(id);
+      const product = await ProductService.getProductById(iDFromReq);
     return product
     }
 
@@ -142,22 +142,36 @@ export default class ProductService{
         
     }
 
-    static async productbyIdValidator(req){
-        if(!req.id){
+    static async productbyIdValidator(id){
+        if(!mongoose.Types.ObjectId.isValid(id)){
             const error = new Error("Id da requisição não encontrado.");
             error.statusCode = 404;
             throw error;
+        }else{
+            return id; 
         }
-        return req.id;
     }
 
     static async getProductById(id){
-        const product = Product.findById({_id: id}).select("-password");
+        const product = await Product.findOne({_id: id});
              if(!product){
                 const error = new Error("Produto não encontrado.");
                 error.statusCode = 404;
              throw error;
         }
-        return product;
+        else{
+             return product;
+        }
+    }
+
+      static async getUserByToken(req){
+        if(!req.user){
+            const error = new Error("Acesso Negado.");
+            error.statusCode = 401;
+            throw error;
+        }
+
+        const user = User.findOne({_id: req.user.id}).select("-password");
+        return user;
     }
 }
