@@ -4,10 +4,6 @@ import { Schema } from "mongoose";
 const Product = mongoose.model(
     "Product",
     new Schema({
-        id:{
-            type: String,
-            required: true
-        },
         name:{
             type: String,
             required: true
