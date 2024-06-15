@@ -171,7 +171,7 @@ export default class ProductService{
             throw error;
         }
 
-        const user = User.findOne({_id: req.user.id}).select("-password");
+        const user = await User.findOne({_id: req.user.id});
         return user;
     }
 }
