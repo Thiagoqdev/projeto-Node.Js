@@ -7,7 +7,12 @@ import imageUpload from "../helpers/image-upload.js";
 const router = Router();
 
 // Define uma rota POST na raiz ("/") que usa middlewares verifyJwt e imageUpload para verificação de JWT e upload de imagens, respectivamente, e chama o método create do ProductController.
-router.post("/", verifyJwt, imageUpload.array("images"), ProductController.create);
+router.post(
+  "/",
+  verifyJwt,
+  imageUpload.array("images"),
+  ProductController.create
+);
 
 // Define uma rota GET na raiz ("/") que chama o método index do ProductController para listar todos os produtos.
 router.get("/", ProductController.index);
@@ -16,22 +21,34 @@ router.get("/", ProductController.index);
 router.get("/showUserProducts", verifyJwt, ProductController.showUserProducts);
 
 // Define uma rota GET para "/showRecieverProducts" que usa o middleware verifyJwt para verificação de JWT e chama o método showRecieverProducts do ProductController para listar produtos recebidos pelo usuário autenticado.
-router.get("/showRecieverProducts", verifyJwt, ProductController.showRecieverProducts);
+router.get(
+  "/showRecieverProducts",
+  verifyJwt,
+  ProductController.showRecieverProducts
+);
 
 // Define uma rota GET para "/:id" que chama o método show do ProductController para exibir os detalhes de um produto específico com base no ID fornecido.
 router.get("/:id", ProductController.show);
 
 // Define uma rota PUT para "/:id" que usa middlewares verifyJwt e imageUpload para verificação de JWT e upload de imagens, respectivamente, e chama o método update do ProductController para atualizar um produto específico com base no ID fornecido.
-router.put("/:id", verifyJwt, imageUpload.array("images"), ProductController.update);
+router.put(
+  "/:id",
+  verifyJwt,
+  imageUpload.array("images"),
+  ProductController.update
+);
 
 // Define uma rota DELETE para "/:id" que usa o middleware verifyJwt para verificação de JWT e chama o método delete do ProductController para excluir um produto específico com base no ID fornecido.
-router.delete("/:id", verifyJwt, ProductController.delete);
+router.delete("/:id", verifyJwt, ProductController.deleteProduct);
 
 // Define uma rota PATCH para "/schedule/:id" que usa o middleware verifyJwt para verificação de JWT e chama o método schedule do ProductController para agendar uma ação para um produto específico com base no ID fornecido.
-router.patch("/schedule/:id", verifyJwt, ProductController.schedule);
+router.patch("/schedule/:id", verifyJwt, ProductController.scheduleProduct);
 
 // Define uma rota PATCH para "/concludeDonation/:id" que usa o middleware verifyJwt para verificação de JWT e chama o método concludeDonation do ProductController para concluir a doação de um produto específico com base no ID fornecido.
-router.patch("/concludeDonation/:id", verifyJwt, ProductController.concludeDonation);
-
+router.patch(
+  "/concludeDonation/:id",
+  verifyJwt,
+  ProductController.concludeDonation
+);
 
 export default router;
